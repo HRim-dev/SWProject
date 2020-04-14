@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>파이차트2</title>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+</head> 
+<body>
+  <h1>Pie Chart(data2.csv)-HR</h1>
+  <script>
+      var width = 500;
+      var height = 500;
+
+      var arc = d3.arc()
+        .innerRadius(0)
+        .outerRadius(240)
+        .cornerRadius(0)
+       
+      var pie = d3.pie()
+                  .sort(null)
+                  .value(function(d) { return d.y; });
+
+       var svg = d3.select("body").append("svg")
+          .attr("width",width)
+          .attr("height",height)
+          .style("background-color","yellow");
+
+       g = svg.append("g")
+                   .attr("transform", "translate(" + width / 2 + "," + height/ 2 +")")
+
+	   d3.csv("data/data2.csv",type).then(function(data){
+           var arcs = pie(data); 
+           var pieChart = g.selectAll("path")
+                           .data(arcs)
+                           .enter();
+           
+     	  pieChart.append("path")
+               .style("fill", function(d,i){
+                        return  d3.color("hsl(100, 100%, " + d.value%100 + "%)");})
+               .attr("d", arc);
+                                
+       	  pieChart.append("text")
+               .attr("transform", function(d) {
+                   return "translate(" + arc.centroid(d) + ")";})
+                .attr("fill","#ffffff")
+                .style("text-anchor", "middle")
+                .style("font-weight", "bold" )
+                .style("text-shadow","-1px -1px 1px #111, 1px 1px 1px #000")
+                .text(function(d) { 
+                      return d.data.x;});
+		});
+	function type(d){
+      d.y=+d.y;    
+      return d;}
+	
+</script> 
+</body>
+</html>

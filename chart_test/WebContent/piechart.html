@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>파이차트</title>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+  <h1>Pie Chart-HR</h1>
+  <div id="pie"></div>
+  <script type="text/javascript">
+    var width = 450,
+        height = 450,
+        outerRadius = Math.min(width,height)/2,
+        innerRadius = outerRadius* .5,
+        color = d3.scale.category20();
+    
+    var dataset=[
+    	{name:"동화약품", value:238500},
+    	{name:"CJ대한통운", value:168500},
+    	{name:"두산", value:100500},
+    	{name:"대림산업", value:99900},
+    	{name:"삼양홀딩스", value:78100}];
+    
+    var vis = d3.select("#pie")
+       .append("svg:svg")
+        .attr("width",width)
+        .attr("height",height)
+        .append("svg:g")
+          .attr("transform","translate("+outerRadius+","+outerRadius+")")
+          .data([dataset]);
+           
+    var arc=d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius);
+    
+    var pie=d3.layout.pie().value(function(d){return d.value;});
+    
+    var arcs=vis.selectAll("g.slice")
+       .data(pie)
+       .enter()
+       .append("svg:g")
+          .attr("class","slice");
+    
+    arcs.append("svg:path")
+       .attr("d",arc)
+       .attr("fill",function(d,i){return color(i);});
+    
+    arcs.append("svg:text")
+       .attr("dy",".35em")
+       .attr("text-anchor","middle")
+       .attr("transform", function(d){ return "translate("+ arc.centroid(d)+ ")rotate("+angle(d)+")";})
+       .text(function(d){return d.data.name;});
+    
+    function angle(d){
+    	var a=(d.startAngle+d.endAngle)*90/Math.PI-90;
+    	return a>90?a-180:a;
+    }
+    
+    vis.append("svg:text")
+       .attr("dy",".35em")
+       .attr("text-anchor","middle")
+       .text("주식")
+       .attr("class","title");
+    
+    
+</script>
+</body>
+</html>
